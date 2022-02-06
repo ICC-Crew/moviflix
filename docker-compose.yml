@@ -1,0 +1,40 @@
+volumes:
+  moviflixDB:
+
+services:
+  
+  client-vuejs:
+    build: ./front-moviflix
+    volumes:
+      - "./front-moviflix:/app"
+      - /app/node_modules/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - recommendation-api
+      - db-api
+
+  recommendation-api:
+    build: ./back-moviflix/recommendation-API
+    volumes:
+      - "./back-moviflix/recommendation-API/:/code"
+    ports:
+      - "3001:80"
+    depends_on:
+      - db-api
+
+  db-api:
+    build: ./back-moviflix/db-API
+    volumes:
+      - "./back-moviflix/db-API/:/code"
+    ports:
+      - "3002:80"
+    depends_on:
+      - db
+
+  db:
+    image: mongo:5.0.6
+    ports:
+      - "27017:27017"
+    volumes:
+      - moviflixDB:/data/db
