@@ -36,5 +36,9 @@ services:
     image: mongo:5.0.6
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE : moviflixDB
+ 
     volumes:
       - moviflixDB:/data/db
+      - ./back-moviflix/db/:/docker-entrypoint-initdb.d/:ro
