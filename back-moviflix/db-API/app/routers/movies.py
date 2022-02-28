@@ -8,3 +8,4 @@ router = APIRouter(
 @router.get("")
 async def getmovies(): 
     return {"message": "Welcome to the movies page!"}
+    
