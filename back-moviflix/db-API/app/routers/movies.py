@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from ..database import connection
 
 router = APIRouter(
      prefix="/movies",
@@ -6,6 +7,7 @@ router = APIRouter(
 )
 
 @router.get("")
-async def getmovies(): 
-    return {"message": "Welcome to the movies page!"}
-    
+async def getmovies(db = Depends(connection.get_db)): 
+    movies = db.movies
+    movieList = await movies.find().to_list(length=100)
+    return {"message": movieList[0]["actors"]}
