@@ -1,15 +1,13 @@
-from typing import Optional
-
 from fastapi import FastAPI
+from .routers import movies
 
 app = FastAPI()
 
+version = "v1" # Bonne pratique pour API-REST/Microservices : préfixe de version pour facilement migrer vers d'autres versions du back 
+route_prefix= "/api/{}".format(version) # Les routes disponibles dans routers auront pour préfixe : /api/{version}/
+
+app.include_router(movies.router,prefix= route_prefix)
 
 @app.get("/")
-def read_root():
-    return {"Hello": "db-API"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+async def root():
+    return {"message": "Welcome to DB-API :) !"}
