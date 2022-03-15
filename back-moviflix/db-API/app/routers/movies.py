@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
-from ..database import connection
+from ..database.connection import get_database
+from ..crud.movies import get_movies
 
 router = APIRouter(
      prefix="/movies",
     tags=["movies"],
 )
 
-@router.get("")
-async def getmovies(db = Depends(connection.get_db)): 
-    movies = db.movies
-    movieList = await movies.find().to_list(length=100)
+@router.get("",tags=["movies"])
+async def getmovies(db = Depends(get_database)): 
+    movieList = await get_movies(db)
     return {"message": movieList[0]["actors"]}
