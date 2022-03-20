@@ -36,4 +36,4 @@ async def initDB():
 
 async def connAndInit():
     await connect_to_mongo()
-    #await initDB()
+    #await initDB() ## LIGNE A DECOMMENTER UNE FOIS POUR L'INITIALISATION DE LA DB
