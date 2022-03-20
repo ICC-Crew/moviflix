@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.movies import get_movies,get_movie_by_id
-from ..models.movie import Movie
+from ..crud.movies import fetch_movies,fetch_movie_by_id,add_movie
+from ..models.movie import Movie,MovieIns
 from typing import List
+from fastapi import HTTPException, Body, status
+from fastapi.responses import JSONResponse
+from ..models.common import PyObjectId
 
 router = APIRouter(
      prefix="/movies",
@@ -10,12 +13,21 @@ router = APIRouter(
 )
 
 @router.get("",response_description="List all movies in DB",response_model=List[Movie])
-async def getmovies(db = Depends(get_database)): 
-    movieList = await get_movies(db)
+async def get_movies(db = Depends(get_database)): 
+    movieList = await fetch_movies(db)
     return movieList
 
-
 @router.get("/{movieId}",response_description="Find a single movie with its MongoDB ID",response_model=Movie)
-async def getmovie(movieId : str, db = Depends(get_database)): 
-    movie = await get_movie_by_id(db,movieId)
-    return movie
+async def get_movie(movieId : str, db = Depends(get_database)): 
+    movie = await fetch_movie_by_id(db,movieId)
+    if movie is not None : 
+        return movie
+
+    raise HTTPException(status_code=404, detail=f"Movie {movieId} not found")
+
+@router.post("",response_description="Insert a single movie into the DB")
+async def insert_movie(movie : MovieIns = Body(...), db=Depends(get_database)):
+    movieId = await add_movie(db,movie)
+    responseJSON = {"insertedId": str(movieId)}
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
+ 
