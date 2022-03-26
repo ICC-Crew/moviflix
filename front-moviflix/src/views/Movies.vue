@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="AHA Welcome to Your Vue.js dockerized + TypeScript App"/>
+  <div>
   </div>
 </template>
 
@@ -14,5 +12,5 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
     HelloWorld,
   },
 })
-export default class Home extends Vue {}
+export default class Movies extends Vue {}
 </script>
