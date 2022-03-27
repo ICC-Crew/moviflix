@@ -1,5 +1,5 @@
 <template>
-<div >
+<div>
   <HeaderComp class="sticky" />
   <router-view class="min-h-screen"  />
   <FooterComp />

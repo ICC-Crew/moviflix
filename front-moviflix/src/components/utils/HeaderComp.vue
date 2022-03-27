@@ -1,6 +1,9 @@
 <template>
-<MenuBar :model="items">
-</MenuBar>
+    <MenuBar :model="items">
+        <template #end>
+              <ButtonComp type="button" label="Connexion" icon="pi pi-users" class="p-button-warning" />
+        </template>
+    </MenuBar>
 </template>
 
 <script lang="ts">

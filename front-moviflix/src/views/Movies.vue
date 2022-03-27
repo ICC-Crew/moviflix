@@ -1,15 +1,14 @@
 <template>
-  <div>
-  </div>
+  <Movie />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Movie from '@/components/movies/Movie.vue'; // @ is an alias to /src
 
 @Options({
   components: {
-    HelloWorld,
+    Movie,
   },
 })
 export default class Movies extends Vue {}
