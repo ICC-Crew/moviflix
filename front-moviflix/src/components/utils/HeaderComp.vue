@@ -1,7 +1,7 @@
 <template>
     <MenuBar :model="items">
         <template #end>
-              <ButtonComp type="button" label="Connexion" icon="pi pi-users" class="p-button-warning" />
+              <ButtonComp type="button" label="Connexion" icon="pi pi-user"  />
         </template>
     </MenuBar>
 </template>
@@ -26,8 +26,8 @@ import Shopping from '@/components/cookies/Shopping.vue'
                     to: '/movies'
                 },
                 {
-                    label: 'Connexion',
-                    icon: 'pi pi-fw pi-user',
+                    label: 'Groupes',
+                    icon: 'pi pi-fw pi-users',
                     to: '/login'
                 }
             ]
