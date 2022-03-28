@@ -1,5 +1,9 @@
 from fastapi import FastAPI,Depends
 from .routers import movies
+from .routers import users
+from .routers import groups
+
+
 from .database.connection import connect_to_mongo,close_mongo_connection,get_database
 from .database.init import connAndInit
 
@@ -12,4 +16,9 @@ app.add_event_handler("startup", connAndInit)
 app.add_event_handler("shutdown", close_mongo_connection)
 
 app.include_router(movies.router,prefix= route_prefix,dependencies=[Depends(get_database)])
+
+app.include_router(users.router,prefix= route_prefix,dependencies=[Depends(get_database)])
+
+app.include_router(groups.router,prefix= route_prefix,dependencies=[Depends(get_database)])
+
 

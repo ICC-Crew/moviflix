@@ -54,12 +54,14 @@ db.users.insertMany([
     {   
         _id:userId1,
         userName:"eisti", 
-        pass:"icc2k22"
+        password:"icc2k22",
+        email: "eisti@test.com"
     },
     {   
         _id:userId2,
         userName:"lo0kat", 
-        pass:"dbmaster97438" 
+        password:"dbmaster97438",
+        email: "lo0kat@test.com"
     }
 ]);
 
