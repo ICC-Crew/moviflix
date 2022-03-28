@@ -7,7 +7,7 @@ from ..models.actor import Actor
 from ..crud.movies import add_movie
 from .connection import get_database,connect_to_mongo
 
-apiKey = "k_9pfhf380"
+apiKey = "k_7kl1dq11"
 movieTest="tt0468569"
 
 def get_top_250_movies(apikey):
@@ -55,8 +55,8 @@ def json_to_updated_movie(movieJSON):
         year = movieJSON["year"],
         synopsis = movieJSON["plotLocal"],
         trailerUrl = movieJSON["trailer"]["linkEmbed"],
-        moviePicturesURL = picturesUrlCustom[3:],
-        actors = actorsCustom[10:]
+        moviePicturesURL = picturesUrlCustom[0:3],
+        actors = actorsCustom[0:10]
     )
     return updatedMovie
 
@@ -87,5 +87,5 @@ async def initDB():
 
 async def connAndInit():
     await connect_to_mongo()
-    print(json_to_updated_movie(get_movie(apiKey,movieTest)))
+    #print(json_to_updated_movie(get_movie(apiKey,movieTest)))
     #await initDB() ## LIGNE A DECOMMENTER UNE FOIS POUR L'INITIALISATION DE LA DB
