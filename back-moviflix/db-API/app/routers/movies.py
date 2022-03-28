@@ -34,4 +34,6 @@ async def insert_movie(movie : MovieIns = Body(...), db=Depends(get_database)):
 @router.patch("/{movieId}",response_description="Update movie DB")
 async def update_one(movieId:str, movie:UpdatedMovie = Body(...),db=Depends(get_database)):
     inserted = await update_movie(db,movie,movieId)
+    if inserted == 0:
+        raise HTTPException(status_code=404, detail=f"Movie {movieId} not found")
     return {"updated":inserted}
