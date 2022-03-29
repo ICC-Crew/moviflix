@@ -1,14 +1,14 @@
 <template>
     <MenuBar :model="items">
         <template #end>
-              <ButtonComp type="button" label="Connexion" icon="pi pi-user"  />
+              <ButtonComp id="login-button" v-on:click="goToLogin()" type="button" label="Connexion" icon="pi pi-user"  />
         </template>
     </MenuBar>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Shopping from '@/components/cookies/Shopping.vue'
+
 @Options({
      
   data() {
@@ -29,10 +29,15 @@ import Shopping from '@/components/cookies/Shopping.vue'
                     label: 'Groupes',
                     icon: 'pi pi-fw pi-users',
                     to: '/login'
-                }
+                },
             ]
 		}
 	},
+    methods:{
+        goToLogin : function(){
+            this.$router.push('/login'); 
+        }
+    },
     computed: {}
 })
 export default class HeaderComp extends Vue {}

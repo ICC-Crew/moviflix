@@ -46,4 +46,43 @@ export default class App extends Vue {}
 .sticky + .content {
   padding-top: 60px;
 }
+
+.main-div{
+  margin-left: 20px;
+}
+
+.div-text-reinitialize{
+  margin-left:auto;
+  margin-right:auto;
+  width:15%;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.div-text-reinitialize:hover{
+  color: #ffcd2e;
+}
+
+.div-text-register{
+  margin-left:auto;
+  margin-right:auto;
+  width:10%;
+  cursor: pointer;
+  margin-bottom: 40px;
+}
+
+.div-text-register:hover{
+  color: #ffcd2e;
+}
+
+.justify-center{
+  justify-content:center;
+  align-items: center;
+}
+
+.inscription-button{
+  margin-left: 2%;
+}
+
+
 </style>
