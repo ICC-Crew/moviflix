@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ml-4">
     <h1>Page d'accueil</h1>
     <a class="nav-link" @click="logUserOut"> Logout</a>
     <p>Bienvenue {{user.name}}</p>
@@ -15,20 +15,20 @@ import { Options, Vue } from 'vue-class-component';
       user: {}
     };
   },
-  methods: {
-    getUserDetails() {
-      let token = localStorage.getItem("jwt");
-      let decoded = token; //find a way to decode
-      this.user = decoded;
-    },
-    logUserOut() {
-      localStorage.removeItem("jwt");
-      this.$router.push("/");
-    }
-  },
-  created() {
-    this.getUserDetails();
-  }
+  // methods: {
+  //   getUserDetails() {
+  //     let token = localStorage.getItem("jwt");
+  //     let decoded = token; //find a way to decode
+  //     this.user = decoded;
+  //   },
+  //   logUserOut() {
+  //     localStorage.removeItem("jwt");
+  //     this.$router.push("/");
+  //   }
+  // },
+  // created() {
+  //   this.getUserDetails();
+  // }
 })
 
 export default class Home extends Vue {}
