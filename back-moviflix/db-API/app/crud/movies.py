@@ -11,6 +11,10 @@ async def fetch_movies(conn: AsyncIOMotorClient):
     row = await conn[database_name][collection_name].find().to_list(length=1000)
     return row
 
+async def fetch_incomplete_movies(conn : AsyncIOMotorClient):
+    row = await conn[database_name][collection_name].find({"fetched":0},{"_id":1,"imdbID":1}).to_list(length=1000)
+    return row
+
 async def fetch_movie_by_id(conn: AsyncIOMotorClient,movieId:str):
     row = await conn[database_name][collection_name].find_one({"_id": ObjectId(movieId)}) 
     return row    
