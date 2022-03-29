@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.groups import fetch_groups,fetch_group_by_id,add_group
-from ..models.group import Group,GroupIns
+from ..crud.groups import fetch_groups,fetch_group_by_id,add_group,update_group_in_db
+from ..models.group import Group,GroupIns,UpdateGroup
 from typing import List
 from fastapi import HTTPException, Body, status
 from fastapi.responses import JSONResponse
@@ -18,7 +18,7 @@ async def get_groups(db = Depends(get_database)):
     return groupList
 
 @router.get("/{groupId}",response_description="Find a group with its MongoDB ID",response_model=Group)
-async def get_group(groupId : str, db = Depends(get_database)): 
+async def get_group(groupId:str, db = Depends(get_database)): 
     group = await fetch_group_by_id(db,groupId)
     if group is not None : 
         return group
@@ -26,8 +26,18 @@ async def get_group(groupId : str, db = Depends(get_database)):
     raise HTTPException(status_code=404, detail=f"Group {groupId} not found")
 
 @router.post("",response_description="Insert a new group into the DB")
-async def insert_group(group : GroupIns = Body(...), db=Depends(get_database)):
+async def insert_group(group:GroupIns = Body(...), db=Depends(get_database)):
     groupId = await add_group(db,group)
     responseJSON = {"insertedId": str(groupId)}
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
+
+@router.patch("",response_description="Update an existing group of the DB")
+async def update_group(groupId:str, group:UpdateGroup, db=Depends(get_database)):
+    inserted = await update_group_in_db(db,groupId,group)
+    if inserted.updatedGroup is None:
+        if inserted.error is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Group {groupId} not found")
+        else:
+            raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=inserted.error)
+    return {"details":inserted}
  

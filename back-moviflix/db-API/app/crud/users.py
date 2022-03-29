@@ -21,5 +21,5 @@ async def fetch_user_by_user_name(conn: AsyncIOMotorClient,userName:str):
 
 async def add_user(conn : AsyncIOMotorClient, user:UserIns):
     userDict = UserIns(**user.dict())
-    newMovie = await conn[database_name][collection_name].insert_one(userDict.dict())
-    return newMovie.inserted_id
+    newUser = await conn[database_name][collection_name].insert_one(userDict.dict())
+    return newUser.inserted_id
