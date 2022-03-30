@@ -11,13 +11,13 @@ import { Options, Vue } from 'vue-class-component';
 import HeaderComp from '@/components/utils/HeaderComp.vue'; // @ is an alias to /src
 import FooterComp from '@/components/utils/FooterComp.vue'
 
-
 @Options({
   components: {
     HeaderComp,
     FooterComp,
   },
 })
+
 export default class App extends Vue {}
 </script>
 
