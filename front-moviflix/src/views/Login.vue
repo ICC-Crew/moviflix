@@ -27,6 +27,7 @@
             </div>
           </div>
           <div class="justify-center flex text-center border-round mb-5">
+              <ToastComp/>
               <ButtonComp v-on:click="call_api_test()" id="login-submit-button" label="Connexion" icon="pi pi-sign-in"/>
               <ButtonComp v-on:click="goToRegister()" class="inscription-button" label="Inscription"/>
           </div>
@@ -54,10 +55,32 @@ import { Options, Vue } from 'vue-class-component';
     goToRegister : function(){
       this.$router.push('register'); 
     },
+    showSuccess() {
+        this.$toast.add({severity:'success', summary: 'Success', detail:'Successfully logged !', life: 3000});
+    },
+    showError() {
+        this.$toast.add({severity:'error', summary: 'Something went wrong...', detail:'You username or password is incorrect', life: 3000});
+    },
     call_api_test: async function (){
-      fetch('http://localhost:3002/API/v1/users')
-        .then(response => response.json())
-        .then(console.log)}
+      const requestOptions = {
+        method: "POST",
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify({userName: this.loginData.username, password: this.loginData.password})
+      };
+      await fetch('http://localhost:3002/API/v1/auth/login', requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("data",data);
+          if(data.msg == "You are logged in !"){
+            this.$router.push('/', () => {
+              this.showSuccess();
+            });
+          }
+          else{
+            this.showError();
+          }
+        });
+      }
     },
   computed: {}
 })
