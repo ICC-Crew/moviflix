@@ -1,8 +1,10 @@
+from inspect import Parameter
 from fastapi import Query
 from ..database.connection import AsyncIOMotorClient
 from bson import ObjectId
 from ..models.movie import MovieIns
 from typing import List
+import ast
 
 database_name = "moviflixDB"
 collection_name= "movies"
@@ -23,3 +25,23 @@ async def add_movie(conn : AsyncIOMotorClient, movie:MovieIns):
 async def add_movies(conn : AsyncIOMotorClient, movies : List[MovieIns]):
     newMovies = await conn[database_name][collection_name].insert_many(movies) 
     return newMovies.inserted_id
+
+async def fetch_movies_with_projection(conn: AsyncIOMotorClient, limit:int, page:int, parameters:str):
+    projection = {}
+
+    if parameters is not None:
+        params = ""
+        for p in parameters.split(","):
+            params += f"'{p.strip()}',"
+
+        parametersToProcess = ast.literal_eval("[" + params + "]")
+
+        for param in parametersToProcess:
+            projection[param] = True
+    
+    if projection == {}:
+        projection = {"title": True, "movieCoverUrl": True}
+    
+    row = await conn[database_name][collection_name].find(projection=projection).skip(page * limit).limit(limit).to_list(length=limit) 
+    
+    return row  
