@@ -12,6 +12,7 @@ import Menubar from 'primevue/menubar';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const app = createApp(App);
 app.use(PrimeVue,{ripple:true});
@@ -19,6 +20,7 @@ app.component('MenuBar',Menubar);
 app.component('ButtonComp',Button);
 app.component('InputText',InputText);
 app.component('Password',Password);
+app.component('ProgressSpinner',ProgressSpinner);
 
 
 //app.directive('styleclass', StyleClass); # for animation

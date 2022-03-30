@@ -1,6 +1,6 @@
 <template>
   <h1>
-  Liste des Films 
+  Film
   </h1>
 </template>
 
