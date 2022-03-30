@@ -1,21 +1,35 @@
+from inspect import Parameter
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.movies import fetch_movies,fetch_movie_by_id,add_movie,update_movie
+from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie
 from ..models.movie import Movie,MovieIns,UpdatedMovie
+
 from typing import List
 from fastapi import HTTPException, Body, status
 from fastapi.responses import JSONResponse
-from ..models.common import PyObjectId
+from fastapi.encoders import jsonable_encoder
 
 router = APIRouter(
      prefix="/movies",
     tags=["movies"],
 )
+@router.get("/",response_description="List all movies in DB, with projection. If you don't provide any projection field, uses title and movieCoverUrl") #response_model=List[Movie]
+async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:str = None, db = Depends(get_database)):
+    movieList = await fetch_movies_with_projection(db, limit, page, parameters)
+    
+    # Nothing found in the DB
+    if movieList is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nothing was found")
+    
+    # Nothing found for the desired page
+    if movieList == []:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Nothing was found for page {page}. Try to get back to the previous page.")
 
-@router.get("",response_description="List all movies in DB",response_model=List[Movie])
-async def get_movies(db = Depends(get_database)): 
-    movieList = await fetch_movies(db)
-    return movieList
+    for mov in movieList:
+        mov["_id"] = str(mov["_id"])
+
+    json_compatible_item_data = jsonable_encoder(movieList)
+    return JSONResponse(content=json_compatible_item_data)
 
 @router.get("/{movieId}",response_description="Find a single movie with its MongoDB ID",response_model=Movie)
 async def get_movie(movieId : str, db = Depends(get_database)): 
