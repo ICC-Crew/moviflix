@@ -1,8 +1,9 @@
 from inspect import Parameter
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection
-from ..models.movie import Movie,MovieIns
+from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie
+from ..models.movie import Movie,MovieIns,UpdatedMovie
+
 from typing import List
 from fastapi import HTTPException, Body, status
 from fastapi.responses import JSONResponse
@@ -44,3 +45,9 @@ async def insert_movie(movie : MovieIns = Body(...), db=Depends(get_database)):
     responseJSON = {"insertedId": str(movieId)}
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
  
+@router.patch("/{movieId}",response_description="Update movie DB")
+async def update_one(movieId:str, movie:UpdatedMovie = Body(...),db=Depends(get_database)):
+    inserted = await update_movie(db,movie,movieId)
+    if inserted == 0:
+        raise HTTPException(status_code=404, detail=f"Movie {movieId} not found")
+    return {"updated":inserted}
