@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from ..database.connection import get_database
 from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie
 from ..models.movie import Movie,MovieIns,UpdatedMovie
+import logging
 
 from typing import List
 from fastapi import HTTPException, Body, status
@@ -13,6 +14,20 @@ router = APIRouter(
      prefix="/movies",
     tags=["movies"],
 )
+
+@router.on_event("startup")
+async def startup_event():
+    loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+    print("Available loggers in movies: ")
+    print(loggers)
+
+    for logg in loggers:
+        print(f"{logg} : {logg.handlers}")
+    
+    root_logger = logging.getLogger()
+    print("rootloggershandlers")
+    print(root_logger.handlers)
+
 @router.get("/",response_description="List all movies in DB, with projection. If you don't provide any projection field, uses title and movieCoverUrl") #response_model=List[Movie]
 async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:str = None, db = Depends(get_database)):
     movieList = await fetch_movies_with_projection(db, limit, page, parameters)
