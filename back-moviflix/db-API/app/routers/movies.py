@@ -13,7 +13,7 @@ router = APIRouter(
      prefix="/movies",
     tags=["movies"],
 )
-@router.get("/",response_description="List all movies in DB, with projection. If you don't provide any projection field, uses title and movieCoverUrl") #response_model=List[Movie]
+@router.get("",response_description="List all movies in DB, with projection. If you don't provide any projection field, uses title and movieCoverUrl")
 async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:str = None, db = Depends(get_database)):
     movieList = await fetch_movies_with_projection(db, limit, page, parameters)
     
