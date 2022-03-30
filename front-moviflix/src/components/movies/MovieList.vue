@@ -3,12 +3,16 @@
         Liste des Films 
     </h1>
     <div class="post">
-        <div v-if="loading">Loading...</div>
+        <div v-if="loading">
+            <ProgressSpinner />
+        </div>
 
         <div v-if="error">{{ error }}</div>
 
         <div v-if="movieList" >
-         <h2>{{ movieList[0].title }}</h2>
+            <div v-for="movie in movieList" :key="movie._id">
+                <h2>{{ movie.title }}</h2>
+            </div>
         </div>
     </div>
 
