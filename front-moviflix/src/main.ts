@@ -14,6 +14,8 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
+import ProgressSpinner from 'primevue/progressspinner';
+
 
 const app = createApp(App);
 
@@ -25,6 +27,7 @@ app.component('ButtonComp',Button);
 app.component('InputText',InputText);
 app.component('Password',Password);
 app.component('ToastComp',Toast);
+app.component('ProgressSpinner',ProgressSpinner);
 
 
 //app.directive('styleclass', StyleClass); # for animation

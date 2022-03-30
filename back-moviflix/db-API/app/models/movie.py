@@ -40,3 +40,20 @@ class MovieIns(BaseModel):
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+class UpdatedMovie(BaseModel):
+    fetched:int = 1
+    duration : Optional[int]
+    movieCoverUrl : Optional[str]
+    genres : Optional[List[str]]
+    directors : Optional[List[str]]
+    year : Optional[int]
+    synopsis : Optional[str]
+    trailerUrl : Optional[str]
+    moviePicturesURL : Optional[List[str]]
+    actors : Optional[List[Actor]]
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
