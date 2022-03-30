@@ -9,10 +9,16 @@
 
         <div v-if="error">{{ error }}</div>
 
-        <div v-if="movieList" >
-            <div v-for="movie in movieList" :key="movie._id">
-                <h2>{{ movie.title }}</h2>
-            </div>
+        <div v-if="movieList" class="flex justify-content-evenly flex-wrap" >
+            <CardComp class="m-4" v-for="movie in movieList" :key="movie._id" style="width: 18em ">
+                <template #header>
+                    <img :src="movie.movieCoverUrl" loading="lazy">
+                </template>
+
+                <template #title>
+                    {{ movie.title }}
+                </template>
+            </CardComp>
         </div>
     </div>
 

@@ -13,6 +13,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import ProgressSpinner from 'primevue/progressspinner';
+import Card from 'primevue/card';
 
 const app = createApp(App);
 app.use(PrimeVue,{ripple:true});
@@ -21,7 +22,7 @@ app.component('ButtonComp',Button);
 app.component('InputText',InputText);
 app.component('Password',Password);
 app.component('ProgressSpinner',ProgressSpinner);
-
+app.component('CardComp',Card);
 
 //app.directive('styleclass', StyleClass); # for animation
 
