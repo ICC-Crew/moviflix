@@ -30,22 +30,13 @@ import { Options, Vue } from 'vue-class-component';
     }
   },
   created() {
-    // watch the params of the route to fetch the data again
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.fetchData()
-      },
-      // fetch the data when the view is created and the data is
-      // already being observed
-      { immediate: true }
-    )
+    this.fetchData()
   },
   methods: {
     fetchData: async function(){
       this.error = this.movieList = null
       this.loading = true
-      // replace `getPost` with your data fetching util / API wrapper
+ 
       
       fetch('http://localhost:3002/API/v1/movies')
         .then(response => {
@@ -63,14 +54,6 @@ import { Options, Vue } from 'vue-class-component';
             console.log(error)
         })
     
-    //   getPost(this.$route.params.id, (err, post) => {
-    //     this.loading = false
-    //     if (err) {
-    //       this.error = err.toString()
-    //     } else {
-    //       this.post = post
-    //     }
-    //   })
     },
   },
 })
