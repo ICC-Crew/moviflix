@@ -1,7 +1,8 @@
+from collections import UserDict
 from fastapi import Query
 from ..database.connection import AsyncIOMotorClient
-from bson import ObjectId
-from ..models.user import UserIns, UserLogin
+from ..models.user import UserIns, UserLogin, UpdateStructureUser
+from bson import ObjectId, errors
 from typing import List
 from ..models.common import PyObjectId
 
@@ -21,9 +22,22 @@ async def fetch_user_by_user_name(conn: AsyncIOMotorClient,userName:str):
     return row 
 
 async def add_user(conn : AsyncIOMotorClient, user:UserIns):
+    return_structure = UpdateStructureUser()
+
     userDict = UserIns(**user.dict())
-    newUser = await conn[database_name][collection_name].insert_one(userDict.dict())
-    return newUser.inserted_id
+    usernameCheckerUnique = await conn[database_name][collection_name].find_one({"userName": userDict.userName})
+    emailCheckerUnique = await conn[database_name][collection_name].find_one({"email": userDict.email})
+
+    if usernameCheckerUnique is not None:
+        if emailCheckerUnique is not None:
+            newUser = await conn[database_name][collection_name].insert_one(userDict.dict())
+            return_structure.userAdded = str(newUser.inserted_id);
+        else:
+            return_structure.error = f"L'email choisi '{userDict.email}' existe déjà, veuillez en choisir un différent"
+    else:
+        return_structure.error = f"Le pseudo choisi  '{userDict.userName}' existe déjà, veuillez en choisir un différent"
+        
+    return return_structure
 
 async def fetch_login_user_name_and_pwd(conn: AsyncIOMotorClient, user:UserLogin):
     userDict = UserLogin(**user.dict())
