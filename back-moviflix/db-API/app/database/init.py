@@ -6,8 +6,8 @@ from ..models.actor import Actor
 from ..crud.movies import add_movie,fetch_incomplete_movies,update_movie
 from .connection import get_database,connect_to_mongo
 
-apiKey = "k_9h78cyt3"
 
+apiKey = "k_7kl1dq11"
 def get_top_250_movies(apikey):
     req = requests.get(f"https://imdb-api.com/fr/API/Top250Movies/{apikey}")
     return req.json()["items"]
@@ -29,6 +29,9 @@ def json_to_updated_movie(movieJSON):
     customDuration = movieJSON["runtimeMins"]
     if movieJSON["runtimeMins"]=='PT2H': # Gestion du format particuler de la durée d'un film
         customDuration = 120 
+
+    if movieJSON["runtimeMins"]=='PT3H': # Gestion du format particuler de la durée d'un film
+        customDuration = 180
 
     for genre in jsonGenres:
         genresCustom.append(genre["value"])
@@ -113,6 +116,6 @@ async def initDB():
 
 async def connAndInit():
     await connect_to_mongo()
-    # await update_incomplete_movies(10)    
+    #await update_incomplete_movies(16)    
     #print(json_to_updated_movie(get_movie(apiKey,movieTest)))
     #await initDB() ## LIGNE A DECOMMENTER UNE FOIS POUR L'INITIALISATION DE LA DB
