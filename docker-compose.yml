@@ -41,4 +41,4 @@ services:
  
     volumes:
       - moviflixDB:/data/db
-      - ./back-moviflix/db/:/docker-entrypoint-initdb.d/:ro
+      - ./back-moviflix/db/init:/docker-entrypoint-initdb.d/:ro
