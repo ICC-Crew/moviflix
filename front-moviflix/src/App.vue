@@ -1,7 +1,7 @@
 <template>
 <div>
   <HeaderComp class="sticky" />
-  <router-view class="min-h-1000"  />
+  <router-view class="min-h-screen"  />
   <FooterComp />
 </div>
 </template>
