@@ -84,5 +84,10 @@ export default class App extends Vue {}
   margin-left: 2%;
 }
 
+.p-toast{
+  position: absolute;
+  z-index: 6;
+}
+
 
 </style>

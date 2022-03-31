@@ -1,7 +1,7 @@
 from fastapi import Query
 from ..database.connection import AsyncIOMotorClient
 from bson import ObjectId
-from ..models.user import UserIns
+from ..models.user import UserIns, UserLogin
 from typing import List
 from ..models.common import PyObjectId
 
@@ -24,3 +24,8 @@ async def add_user(conn : AsyncIOMotorClient, user:UserIns):
     userDict = UserIns(**user.dict())
     newUser = await conn[database_name][collection_name].insert_one(userDict.dict())
     return newUser.inserted_id
+
+async def fetch_login_user_name_and_pwd(conn: AsyncIOMotorClient, user:UserLogin):
+    userDict = UserLogin(**user.dict())
+    row = await conn[database_name][collection_name].find_one(userDict.dict())
+    return row 

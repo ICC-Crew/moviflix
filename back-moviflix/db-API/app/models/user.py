@@ -22,3 +22,11 @@ class UserIns(BaseModel):
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+class UserLogin(BaseModel):
+    userName : str
+    password : str
+    
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
