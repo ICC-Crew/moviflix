@@ -2,9 +2,50 @@
   <h1>
   Film
   </h1>
+   <div v-if="loading">
+            <ProgressBar mode="indeterminate" />
+    </div>
+
+    <div v-if="error">{{ error }}</div>
+
+    <div v-if="movie">
+        <div class ="flex justify-content-evenly flex-wrap">
+            <CardComp class="m-4" style="width : 35rem">
+                <template #header>
+                    <img :src="movie.movieCoverUrl" loading="lazy" >
+                </template>
+                <template #title>
+                    {{ movie.title }}
+                </template>
+                <template #content>
+                 {{ movie.synopsis }}
+                </template>
+            </CardComp>
+            <div v-if="movie.trailerUrl">
+          <iframe :src="processUrlTrailer" width="640" height="640" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" frameborder="no" scrolling="no"></iframe>
+            <div> Réalisateurs 
+            <h2 v-for="director in movie.directors" :key="director[i]">
+              - {{ director }}
+            </h2>
+            </div>
+            </div>
+      </div>
+      <div class ="flex justify-content-evenly flex-wrap">
+            <CardComp v-for="actor in movie.actors" :key="actor[i]" class="m-2" style="width : 10rem">
+                <template #header>
+                    <img :src="actor.imgActorUrl" loading="lazy" >
+                </template>
+                <template #title>
+                    {{ actor.name }}
+                </template>
+                <template #content>
+                 {{ actor.asCharacter }}
+                </template>
+            </CardComp>     
+      </div>
+
+    </div>
 </template>
-
-
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
@@ -13,21 +54,18 @@ import { Options, Vue } from 'vue-class-component';
   data() {
     return {
       loading: false,
-      movieList: null,
+      movie: null,
       error: null,
     }
   },
   created() {
-    this.fetchPage()
+    this.fetchMovie(this.$route.params.id)
   },
   methods: {
-    goToMovie: function(){
-     // this.$router.push('movies/test'); 
-    },
-    fetchPage : async function(page= 0){
+    fetchMovie : async function(movieId:string){
       this.loading = true
-      this.error = this.movieList = null
-      fetch(`http://localhost:3002/API/v1/movies?limit=20&page=${page}`)
+      this.error = this.movie = null
+      fetch(`http://localhost:3002/API/v1/movies/${movieId}`)
         .then(response => {
             if (response.ok){
                 return response.json() 
@@ -35,7 +73,7 @@ import { Options, Vue } from 'vue-class-component';
             throw new Error('Erreur lors de la connection à l API')
         })
         .then(responseJSON =>{
-            this.movieList = responseJSON
+            this.movie = responseJSON
             this.loading = false
         })
         .catch((error)=>{
@@ -43,11 +81,15 @@ import { Options, Vue } from 'vue-class-component';
             this.loading = false
             console.log(error)
         })
-    },
-    onPage: function (event:any){
-      this.fetchPage(event.page)
     }
   },
+  computed : {
+      processUrlTrailer(){
+      let result = (this.movie.trailerUrl+"?autoplay=false&width=640").toString()
+      console.log(result)
+      return(result)
+    }
+  }
 })
 export default class Movie extends Vue {
   msg!: string

@@ -4,9 +4,9 @@
     </h1>
       
     <div class="post">
-        <PaginatorComp :rows="1" :totalRecords="20" @page="onPage($event)"></PaginatorComp>
+        <PaginatorComp :rows="1" :totalRecords="20" @page="onPage($event)" class="m-4"></PaginatorComp>
         <div v-if="loading">
-            <ProgressBar mode="indeterminate" />
+            <ProgressBar mode="indeterminate"/>
         </div>
 
         <div v-if="error">{{ error }}</div>
