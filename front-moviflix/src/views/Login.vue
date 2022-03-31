@@ -28,7 +28,7 @@
           </div>
           <div class="justify-center flex text-center border-round mb-5">
               <ToastComp/>
-              <ButtonComp v-on:click="call_api_test()" id="login-submit-button" label="Connexion" icon="pi pi-sign-in"/>
+              <ButtonComp v-on:click="api_login()" id="login-submit-button" label="Connexion" icon="pi pi-sign-in"/>
               <ButtonComp v-on:click="goToRegister()" class="inscription-button" label="Inscription"/>
           </div>
         </form>
@@ -55,13 +55,16 @@ import { Options, Vue } from 'vue-class-component';
     goToRegister : function(){
       this.$router.push('register'); 
     },
+    goToHome : function(){
+      this.$router.push('/'); 
+    },
     showSuccess() {
-        this.$toast.add({severity:'success', summary: 'Success', detail:'Successfully logged !', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Succès', detail:'Connecté avec succès', life: 3000});
     },
     showError() {
-        this.$toast.add({severity:'error', summary: 'Something went wrong...', detail:'You username or password is incorrect', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Oups...', detail:'Ton pseudo ou ton mot de passe est incorrect', life: 3000});
     },
-    call_api_test: async function (){
+    api_login: async function (){
       const requestOptions = {
         method: "POST",
         headers:{"Content-Type": "application/json"},
@@ -72,9 +75,8 @@ import { Options, Vue } from 'vue-class-component';
         .then((data) => {
           console.log("data",data);
           if(data.msg == "You are logged in !"){
-            this.$router.push('/', () => {
-              this.showSuccess();
-            });
+            this.showSuccess();
+            setTimeout(this.goToHome,2000);
           }
           else{
             this.showError();

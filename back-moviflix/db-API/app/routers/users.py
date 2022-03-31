@@ -35,7 +35,10 @@ async def get_user_by_username(userName : str, db = Depends(get_database)):
 
 @router.post("",response_description="Insert a single user into the DB")
 async def add_user_to_db(user : UserIns = Body(...), db=Depends(get_database)):
-    userId = await add_user(db,user)
-    responseJSON = {"insertedId": str(userId)}
+    response = await add_user(db,user)
+    if response.userAdded is None:
+        if response.error is not None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{response.error}")
+    responseJSON = {"msg":response.userAdded}
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
  
