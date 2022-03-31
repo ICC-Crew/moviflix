@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Movies from '../views/Movies.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import Movie from '../components/movies/Movie.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -29,6 +30,9 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: Register
   },
+  { path: '/movies/:id',
+    name:'Movie',
+    component: Movie },
 
 ]
 

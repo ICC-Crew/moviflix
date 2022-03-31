@@ -21,7 +21,7 @@
                     {{ movie.title }}
                 </template>
                 <template #footer>
-                  <ButtonComp icon="pi pi-video" label="Infos"/>
+                  <ButtonComp icon="pi pi-video" label="Infos" @click="goToMovie(movie._id)"/>
                 </template>
             </CardComp>
         </div>
@@ -45,6 +45,9 @@ import { Options, Vue } from 'vue-class-component';
     this.fetchPage()
   },
   methods: {
+    goToMovie: function(movieId:number){
+      this.$router.push(`/movies/${movieId}`); 
+    },
     fetchPage : async function(page= 0){
       this.loading = true
       this.error = this.movieList = null
@@ -70,7 +73,7 @@ import { Options, Vue } from 'vue-class-component';
     }
   },
 })
-export default class Movie extends Vue {
+export default class MovieList extends Vue {
   msg!: string
 }
 </script>
