@@ -19,7 +19,13 @@ async def get_groups(db = Depends(get_database)):
 
 @router.get("/{groupId}",response_description="Find a group with its MongoDB ID",response_model=Group)
 async def get_group(groupId:str, db = Depends(get_database)): 
-    group = await fetch_group_by_id(db,groupId)
+    # Check if the group ID is valid
+    try:
+        groupIdToFetch = PyObjectId(groupId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{groupId}' is not a valid Mongo ID")
+    
+    group = await fetch_group_by_id(db,groupIdToFetch)
     if group is not None : 
         return group
 

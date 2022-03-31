@@ -5,7 +5,6 @@ from .routers import users
 from .routers import groups
 from .routers import authentification
 
-
 from .database.connection import connect_to_mongo,close_mongo_connection,get_database
 from .database.init import connAndInit
 
