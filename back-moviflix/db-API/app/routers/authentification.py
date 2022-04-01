@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.users import fetch_login_user_name_and_pwd
-from ..models.user import UserLogin
+from ..crud.users import fetch_check_exist_user_login, add_user
+from ..models.user import UserIns, UserLoginSchema
 from fastapi import HTTPException, Body, status
-from fastapi.responses import JSONResponse
-from app.models.model import PostSchema
+from app.auth.auth_handler import signJWT
 
 router = APIRouter(
      prefix="/auth",
@@ -12,53 +11,22 @@ router = APIRouter(
 )
 
 
-posts = [
-    {
-        "id": 1,
-        "title": "Pancake",
-        "content": "Lorem Ipsum ..."
-    }
-]
-
-users = []
-
-
-@router.get("/test",tags=["gets"])
-async def read_root() -> dict:
-    return {"message": "Welcome to your blog!."}
+@router.post("/user/register", response_description="Insert a single user into the DB")
+async def user_register(user: UserIns = Body(...), db = Depends(get_database)):
+    response = await add_user(db,user)
+    if response.userAdded is None:
+        if response.error is not None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{response.error}")
+    # responseJSON = {"msg":response.userAdded}
+    # return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
+    # users.append(user) # replace with db call, making sure to hash the password first
+    return signJWT(user.userName)
 
 
-@router.get("/posts", tags=["gets"])
-async def get_posts() -> dict:
-    return { "data": posts }
-
-
-@router.get("/posts/{id}", tags=["gets"])
-async def get_single_post(id: int) -> dict:
-    if id > len(posts):
-        return {
-            "error": "No such post with the supplied ID."
-        }
-
-    for post in posts:
-        if post["id"] == id:
-            return {
-                "data": post
-            }
-
-@router.post("/posts", tags=["posts"])
-async def add_post(post: PostSchema) -> dict:
-    post.id = len(posts) + 1
-    posts.append(post.dict())
-    return {
-        "data": "post added."
-    }
-
-@router.post("/login",response_description="Login user with its username+pwd")
-async def login_user_by_username_pwd(user : UserLogin = Body(...), db = Depends(get_database)): 
-    response = await fetch_login_user_name_and_pwd(db,user)
-    if response is not None : 
-        return {"msg" : "You are logged in !"}
-
+@router.post("/user/login", response_description="Try login an user")
+async def user_login(user: UserLoginSchema = Body(...), db = Depends(get_database)):
+    response = await fetch_check_exist_user_login(db,user)
+    print("repsonse",response)
+    if response is True:
+        return signJWT(user.userName)
     raise HTTPException(status_code=404, detail=f"Username or password is wrong, retry.")
-
