@@ -4,7 +4,7 @@
     </h1>
       
     <div class="post">
-        <PaginatorComp :rows="1" :totalRecords="20" @page="onPage($event)" class="m-4"></PaginatorComp>
+        <PaginatorComp :rows="1" :totalRecords="numberMovies" @page="onPage($event)" class="m-4"></PaginatorComp>
         <div v-if="loading">
             <ProgressBar mode="indeterminate"/>
         </div>
@@ -39,6 +39,7 @@ import { Options, Vue } from 'vue-class-component';
       loading: false,
       movieList: null,
       error: null,
+      numberMovies:1
     }
   },
   created() {
@@ -51,12 +52,29 @@ import { Options, Vue } from 'vue-class-component';
     fetchPage : async function(page= 0){
       this.loading = true
       this.error = this.movieList = null
+
+      fetch("http://localhost:3002/API/v1/movies/count")
+      .then(response => {
+            if (response.ok){
+                return response.json() 
+            }      
+            throw new Error('Erreur lors de connecion à l API (compter les films)')
+        })
+        .then(responseJSON =>{
+            this.numberMovies= Number(responseJSON.number)/20
+        })
+        .catch((error)=>{
+            this.error = error.toString()
+            console.log(error)
+        })
+    
+      
       fetch(`http://localhost:3002/API/v1/movies?limit=20&page=${page}`)
         .then(response => {
             if (response.ok){
                 return response.json() 
             }      
-            throw new Error('Erreur lors de la connection à l API')
+            throw new Error('Erreur lors de la connection à l API (pagination des films) ')
         })
         .then(responseJSON =>{
             this.movieList = responseJSON

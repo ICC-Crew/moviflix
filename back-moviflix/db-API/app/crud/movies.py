@@ -21,6 +21,10 @@ async def fetch_movie_by_id(conn: AsyncIOMotorClient,movieId:str):
     row = await conn[database_name][collection_name].find_one({"_id": ObjectId(movieId)}) 
     return row    
 
+async def count_movies(conn:AsyncIOMotorClient):
+    number = await conn[database_name][collection_name].count_documents({})
+    return number
+
 async def add_movie(conn : AsyncIOMotorClient, movie:MovieIns):
     movieDict = MovieIns(**movie.dict())
     newMovie = await conn[database_name][collection_name].insert_one(movieDict.dict())

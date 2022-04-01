@@ -1,7 +1,7 @@
 from inspect import Parameter
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie
+from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie,count_movies
 from ..models.movie import Movie,MovieIns,UpdatedMovie
 
 from typing import List
@@ -31,6 +31,14 @@ async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:st
     json_compatible_item_data = jsonable_encoder(movieList)
     return JSONResponse(content=json_compatible_item_data)
 
+@router.get("/count",response_description="Count the number of Movies")
+async def number_of_movies(db = Depends(get_database)): 
+    number = await count_movies(db)
+    if number is not None : 
+        return {"number" : number}
+
+    raise HTTPException(status_code=400, detail="Error counting the number of movies")
+    
 @router.get("/{movieId}",response_description="Find a single movie with its MongoDB ID",response_model=Movie)
 async def get_movie(movieId : str, db = Depends(get_database)): 
     movie = await fetch_movie_by_id(db,movieId)
@@ -38,6 +46,8 @@ async def get_movie(movieId : str, db = Depends(get_database)):
         return movie
 
     raise HTTPException(status_code=404, detail=f"Movie {movieId} not found")
+
+
 
 @router.post("",response_description="Insert a single movie into the DB")
 async def insert_movie(movie : MovieIns = Body(...), db=Depends(get_database)):

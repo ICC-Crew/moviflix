@@ -42,7 +42,6 @@
             </h2>
             <DividerComp />
             <ChipComp v-for="genre in movie.genres" :key="genre[i]" :label="genre" class="m-2" style="background: var(--primary-color);color: var(--primary-color-text)" />
-
             </div>
             </div>
       </div>
@@ -72,6 +71,7 @@ import { Options, Vue } from 'vue-class-component';
       loading: false,
       movie: null,
       error: null,
+
     }
   },
   created() {
@@ -100,9 +100,9 @@ import { Options, Vue } from 'vue-class-component';
     }
   },
   computed : {
-      processUrlTrailer(){
+      processUrlTrailer(){  
       let result = (this.movie.trailerUrl+"?autoplay=false&width=640").toString()
-      console.log(result)
+      console.log(result)   
       return(result)
     }
   }
