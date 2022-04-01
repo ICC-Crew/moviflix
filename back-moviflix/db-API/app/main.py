@@ -4,6 +4,7 @@ from .routers import movies
 from .routers import users
 from .routers import groups
 from .routers import authentification
+from .routers import user_opinions
 
 from .database.connection import connect_to_mongo,close_mongo_connection,get_database
 from .database.init import connAndInit
@@ -51,5 +52,7 @@ app.include_router(users.router,prefix= route_prefix,dependencies=[Depends(get_d
 app.include_router(groups.router,prefix= route_prefix,dependencies=[Depends(get_database)])
 
 app.include_router(authentification.router,prefix= route_prefix,dependencies=[Depends(get_database)])
+
+app.include_router(user_opinions.router,prefix= route_prefix,dependencies=[Depends(get_database)])
 
 

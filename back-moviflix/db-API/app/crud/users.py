@@ -46,3 +46,18 @@ async def fetch_check_exist_user_login(conn: AsyncIOMotorClient, user:UserLoginS
         return True
     else:
         return False
+
+async def fetch_user_watched_movies(conn: AsyncIOMotorClient, userId:PyObjectId):
+    ratingList = await conn[database_name]["userOpinions"].find({"userId": userId}).to_list(length=1000)
+    movieIdList = [el["movieId"] for el in ratingList]
+
+    movieList = await conn[database_name]["movies"].find({"_id": {"$in": movieIdList}}, projection={"_id": True, "title": True, "movieCoverUrl": True}).to_list(length=1000)
+
+    if movieList is not None and movieList != []:
+        for movL in movieList:
+            for movRating in ratingList:
+                if movRating["movieId"] == movL["_id"]:
+                    movL["rating"] = movRating["rating"]
+                    ratingList.remove(movRating)
+
+    return movieList

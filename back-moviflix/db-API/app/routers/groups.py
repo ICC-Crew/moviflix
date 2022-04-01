@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.groups import fetch_groups,fetch_group_by_id,add_group,update_group_in_db
+from ..crud.groups import fetch_groups, fetch_group_by_id, add_group, update_group_in_db, fetch_group_watched_list
 from ..models.group import Group,GroupIns,UpdateGroup
 from typing import List
 from fastapi import HTTPException, Body, status
@@ -24,11 +24,27 @@ async def get_group(groupId:str, db = Depends(get_database)):
     try:
         groupIdToFetch = PyObjectId(groupId)
     except:
-        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{groupId}' is not a valid Mongo ID")
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided group ID '{groupId}' is not a valid Mongo ID")
     
     group = await fetch_group_by_id(db,groupIdToFetch)
     if group is not None : 
         return group
+
+    raise HTTPException(status_code=404, detail=f"Group {groupId} not found")
+
+@router.get("/{groupId}/watched",response_description="Find the list of watched movies of a group with its MongoDB ID")
+async def get_group_watched_list(groupId:str, db = Depends(get_database)): 
+    # Check if the group ID is valid
+    try:
+        groupIdToFetch = PyObjectId(groupId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided group ID '{groupId}' is not a valid Mongo ID")
+    
+    group = await get_group(groupIdToFetch, db)
+    
+    print(group["members"])
+
+    movieList = await fetch_group_watched_list(db, group["members"])
 
     raise HTTPException(status_code=404, detail=f"Group {groupId} not found")
 
