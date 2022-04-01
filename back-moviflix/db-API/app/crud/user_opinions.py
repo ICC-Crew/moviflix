@@ -17,7 +17,15 @@ async def fetch_user_opinions(conn: AsyncIOMotorClient):
 
 async def fetch_user_opinion_by_id(conn: AsyncIOMotorClient,userId:PyObjectId):
     row = await conn[database_name][collection_name].find_one({"_id": userId}) 
-    return row    
+    return row
+
+async def fetch_user_opinions_by_user_id(conn: AsyncIOMotorClient, userId:PyObjectId):
+    row = await conn[database_name][collection_name].find({"userId": userId}).to_list(length=1000)
+    return row
+
+async def fetch_user_opinion_with_movie_id(conn: AsyncIOMotorClient, userId:PyObjectId, movieId:PyObjectId):
+    row = await conn[database_name][collection_name].find_one({"userId": userId, "movieId": movieId})
+    return row
 
 async def add_user_opinion(conn : AsyncIOMotorClient, userOpinion:UserOpinionStruct):
     return_structure = UpdateStructureUserOpinion()

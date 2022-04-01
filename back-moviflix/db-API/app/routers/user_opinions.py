@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.user_opinions import fetch_user_opinions, fetch_user_opinion_by_id, add_user_opinion
+from ..crud.user_opinions import fetch_user_opinions, fetch_user_opinion_by_id, add_user_opinion, fetch_user_opinions_by_user_id, fetch_user_opinion_with_movie_id
 from ..models.user_opinion import UserOpinion, UserOpinionIns, UserOpinionStruct
 from typing import List
 from fastapi import HTTPException, Body, status
@@ -16,6 +16,41 @@ router = APIRouter(
 async def get_user_opinions(db = Depends(get_database)): 
     userList = await fetch_user_opinions(db)
     return userList
+
+
+@router.get("/user/{userId}",response_description="Find all user opinions with its MongoDB ID",response_model=List[UserOpinion])
+async def get_user_opinion_by_id(userId : str, db = Depends(get_database)):
+    # Check if the user ID is valid
+    try:
+        userIdToFetch = PyObjectId(userId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{userId}' is not a valid Mongo ID")
+
+    userOpinion = await fetch_user_opinions_by_user_id(db, userIdToFetch)
+    if userOpinion is not None and userOpinion != []: 
+        return userOpinion
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not rate any movie")
+
+@router.get("/u={userId}&mov={movieId}",response_description="Try to find a user opinion of a movie with their MongoDB ID",response_model=UserOpinion)
+async def get_user_opinion_by_id(userId : str, movieId:str, db = Depends(get_database)):
+    # Check if the user ID is valid
+    try:
+        userIdToFetch = PyObjectId(userId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{userId}' is not a valid Mongo ID")
+    
+     # Check if the movie ID is valid
+    try:
+        movieIdToFetch = PyObjectId(movieId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{movieId}' is not a valid Mongo ID")
+
+    userOpinion = await fetch_user_opinion_with_movie_id(db, userIdToFetch, movieIdToFetch)
+    if userOpinion is not None: 
+        return userOpinion
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not rate this movie")
 
 @router.get("/{userOpinionId}",response_description="Find an user opinion with its MongoDB ID",response_model=UserOpinion)
 async def get_user_opinion_by_id(userOpinionId : str, db = Depends(get_database)):
