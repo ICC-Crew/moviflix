@@ -15,6 +15,8 @@ import Password from 'primevue/password';
 import ProgressBar from 'primevue/progressbar';
 import Card from 'primevue/card';
 import Paginator from 'primevue/paginator';
+import Divider from 'primevue/divider';
+import Chip from 'primevue/chip';
 
 const app = createApp(App);
 app.use(PrimeVue,{ripple:true});
@@ -25,6 +27,8 @@ app.component('Password',Password);
 app.component('ProgressBar',ProgressBar);
 app.component('CardComp',Card);
 app.component('PaginatorComp',Paginator);
+app.component('DividerComp',Divider);
+app.component('ChipComp',Chip);
 
 //app.directive('styleclass', StyleClass); # for animation
 

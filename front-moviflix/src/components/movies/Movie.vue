@@ -10,6 +10,7 @@
 
     <div v-if="movie">
         <div class ="flex justify-content-evenly flex-wrap">
+        <div>
             <CardComp class="m-4" style="width : 35rem">
                 <template #header>
                     <img :src="movie.movieCoverUrl" loading="lazy" >
@@ -21,12 +22,27 @@
                  {{ movie.synopsis }}
                 </template>
             </CardComp>
+            </div>
             <div v-if="movie.trailerUrl">
           <iframe :src="processUrlTrailer" width="640" height="640" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" frameborder="no" scrolling="no"></iframe>
+            <DividerComp />
             <div> Réalisateurs 
             <h2 v-for="director in movie.directors" :key="director[i]">
-              - {{ director }}
+            {{ director }}
             </h2>
+            <DividerComp />
+            Durée
+            <h2>
+            {{ movie.duration }} min
+            </h2>
+            <DividerComp />
+            Sortie
+            <h2>
+            {{ movie.year }}
+            </h2>
+            <DividerComp />
+            <ChipComp v-for="genre in movie.genres" :key="genre[i]" :label="genre" class="m-2" style="background: var(--primary-color);color: var(--primary-color-text)" />
+
             </div>
             </div>
       </div>
