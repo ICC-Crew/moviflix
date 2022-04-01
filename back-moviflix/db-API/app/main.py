@@ -9,7 +9,22 @@ from .routers import user_opinions
 from .database.connection import connect_to_mongo,close_mongo_connection,get_database
 from .database.init import connAndInit
 
-app = FastAPI()
+description = """
+Moviflix API vous permet d'effectuer de nombreuses actions liées à l'interface utilisateur Moviflix. 🚀
+## Informations
+Obligatoire pour les routes sécurisées (JWT Token) :
+* **Etre connecté**.
+* **Créer un compte**.
+"""
+
+app = FastAPI(
+    title="MoviflixAPI",
+    description=description,
+    version="1.0.0",
+    contact={
+        "name": "CHOMEL Louis - LAPASSADE Mathieu - ROYER Romain ",
+    },
+)
 
 origins = [
     "http://localhost:8080"

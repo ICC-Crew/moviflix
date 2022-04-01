@@ -1,7 +1,7 @@
 from collections import UserDict
 from fastapi import Query
 from ..database.connection import AsyncIOMotorClient
-from ..models.user import UserIns, UserLogin, UpdateStructureUser
+from ..models.user import UserIns, UpdateStructureUser, UserLoginSchema
 from bson import ObjectId, errors
 from typing import List
 from ..models.common import PyObjectId
@@ -28,10 +28,10 @@ async def add_user(conn : AsyncIOMotorClient, user:UserIns):
     usernameCheckerUnique = await conn[database_name][collection_name].find_one({"userName": userDict.userName})
     emailCheckerUnique = await conn[database_name][collection_name].find_one({"email": userDict.email})
 
-    if usernameCheckerUnique is not None:
-        if emailCheckerUnique is not None:
+    if usernameCheckerUnique is None:
+        if emailCheckerUnique is None:
             newUser = await conn[database_name][collection_name].insert_one(userDict.dict())
-            return_structure.userAdded = str(newUser.inserted_id);
+            return_structure.userAdded = str(newUser.inserted_id)
         else:
             return_structure.error = f"L'email choisi '{userDict.email}' existe déjà, veuillez en choisir un différent"
     else:
@@ -39,10 +39,13 @@ async def add_user(conn : AsyncIOMotorClient, user:UserIns):
         
     return return_structure
 
-async def fetch_login_user_name_and_pwd(conn: AsyncIOMotorClient, user:UserLogin):
-    userDict = UserLogin(**user.dict())
+async def fetch_check_exist_user_login(conn: AsyncIOMotorClient, user:UserLoginSchema):
+    userDict = UserLoginSchema(**user.dict())
     row = await conn[database_name][collection_name].find_one(userDict.dict())
-    return row 
+    if row is not None:
+        return True
+    else:
+        return False
 
 async def fetch_user_watched_movies(conn: AsyncIOMotorClient, userId:PyObjectId):
     ratingList = await conn[database_name]["userOpinions"].find({"userId": userId}).to_list(length=1000)

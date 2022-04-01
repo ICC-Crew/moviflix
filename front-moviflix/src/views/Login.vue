@@ -52,6 +52,10 @@ import { Options, Vue } from 'vue-class-component';
     };
   },
   methods:{
+    addNewToken : function(token : string){
+      this.$store.dispatch("addToken", token)
+      this.$store.dispatch("connect")
+    },
     goToRegister : function(){
       this.$router.push('register'); 
     },
@@ -61,8 +65,8 @@ import { Options, Vue } from 'vue-class-component';
     showSuccess() {
         this.$toast.add({severity:'success', summary: 'Succès', detail:'Connecté avec succès', life: 3000});
     },
-    showError() {
-        this.$toast.add({severity:'error', summary: 'Oups...', detail:'Ton pseudo ou ton mot de passe est incorrect', life: 3000});
+    showError(message : string) {
+        this.$toast.add({severity:'error', summary: 'Oups...', detail: message, life: 3000});
     },
     api_login: async function (){
       const requestOptions = {
@@ -70,16 +74,17 @@ import { Options, Vue } from 'vue-class-component';
         headers:{"Content-Type": "application/json"},
         body: JSON.stringify({userName: this.loginData.username, password: this.loginData.password})
       };
-      await fetch('http://localhost:3002/API/v1/auth/login', requestOptions)
+      await fetch('http://localhost:3002/API/v1/auth/user/login', requestOptions)
         .then((response) => response.json())
         .then((data) => {
           console.log("data",data);
-          if(data.msg == "You are logged in !"){
+          if('access_token' in data){
+            this.addNewToken(data.access_token);
             this.showSuccess();
             setTimeout(this.goToHome,2000);
           }
           else{
-            this.showError();
+            this.showError(data.detail);
           }
         });
       }
