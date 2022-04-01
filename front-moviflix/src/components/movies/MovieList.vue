@@ -1,18 +1,30 @@
 <template>
     <h1>
-        Liste des Films 
+      Les Films
     </h1>
+      
     <div class="post">
+        <PaginatorComp :rows="1" :totalRecords="numberMovies" @page="onPage($event)" class="m-4"></PaginatorComp>
         <div v-if="loading">
-            <ProgressSpinner />
+            <ProgressBar mode="indeterminate"/>
         </div>
 
         <div v-if="error">{{ error }}</div>
 
-        <div v-if="movieList" >
-            <div v-for="movie in movieList" :key="movie._id">
-                <h2>{{ movie.title }}</h2>
-            </div>
+        <div v-if="movieList">
+        <div class ="flex justify-content-evenly flex-wrap">
+            <CardComp class="m-4" v-for="movie in movieList" :key="movie._id" style="width: 18rem">
+                <template #header>
+                    <img :src="movie.movieCoverUrl" loading="lazy" style="height:25em">
+                </template>
+                <template #title>
+                    {{ movie.title }}
+                </template>
+                <template #footer>
+                  <ButtonComp icon="pi pi-video" label="Infos" @click="goToMovie(movie._id)"/>
+                </template>
+            </CardComp>
+        </div>
         </div>
     </div>
 
@@ -27,23 +39,42 @@ import { Options, Vue } from 'vue-class-component';
       loading: false,
       movieList: null,
       error: null,
+      numberMovies:1
     }
   },
   created() {
-    this.fetchData()
+    this.fetchPage()
   },
   methods: {
-    fetchData: async function(){
-      this.error = this.movieList = null
+    goToMovie: function(movieId:number){
+      this.$router.push(`/movies/${movieId}`); 
+    },
+    fetchPage : async function(page= 0){
       this.loading = true
- 
+      this.error = this.movieList = null
+
+      fetch("http://localhost:3002/API/v1/movies/count")
+      .then(response => {
+            if (response.ok){
+                return response.json() 
+            }      
+            throw new Error('Erreur lors de connecion à l API (compter les films)')
+        })
+        .then(responseJSON =>{
+            this.numberMovies= Number(responseJSON.number)/20
+        })
+        .catch((error)=>{
+            this.error = error.toString()
+            console.log(error)
+        })
+    
       
-      fetch('http://localhost:3002/API/v1/movies')
+      fetch(`http://localhost:3002/API/v1/movies?limit=20&page=${page}`)
         .then(response => {
             if (response.ok){
                 return response.json() 
             }      
-            throw new Error('Erreur lors de la connection à l API')
+            throw new Error('Erreur lors de la connection à l API (pagination des films) ')
         })
         .then(responseJSON =>{
             this.movieList = responseJSON
@@ -51,13 +82,16 @@ import { Options, Vue } from 'vue-class-component';
         })
         .catch((error)=>{
             this.error = error.toString()
+            this.loading = false
             console.log(error)
         })
-    
     },
+    onPage: function (event:any){
+      this.fetchPage(event.page)
+    }
   },
 })
-export default class Movie extends Vue {
+export default class MovieList extends Vue {
   msg!: string
 }
 </script>
