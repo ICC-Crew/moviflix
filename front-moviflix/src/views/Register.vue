@@ -7,18 +7,18 @@
           <h1>Créez un compte !</h1>
         </div>
         <form>
-         <div class="block text-center border-round mb-5">
-            <div class="p-input-icon-right p-float-label">
-              <InputText id="email" class="p-inputtext-lg" type="text" v-model="registerData.email" />
-              <label for="email">Email</label>
-              <i class="pi pi-envelope"/>
-            </div>
-          </div>
           <div class="block text-center border-round mb-5">
             <div class="p-input-icon-right p-float-label">
               <InputText id="username" class="p-inputtext-lg" type="text" v-model="registerData.username" />
               <label for="username">Pseudo</label>
               <i class="pi pi-user"/>
+            </div>
+          </div>
+         <div class="block text-center border-round mb-5">
+            <div class="p-input-icon-right p-float-label">
+              <InputText id="email" class="p-inputtext-lg" type="text" v-model="registerData.email" />
+              <label for="email">Email</label>
+              <i class="pi pi-envelope"/>
             </div>
           </div>
           <div class="block text-center border-round mb-5">
@@ -82,11 +82,10 @@ import { Options, Vue } from 'vue-class-component';
         headers:{"Content-Type": "application/json"},
         body: JSON.stringify({userName: this.registerData.username, password: this.registerData.password, email: this.registerData.email})
       };
-      await fetch('http://localhost:3002/API/v1/users', requestOptions)
+      await fetch('http://localhost:3002/API/v1/auth/user/register', requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          console.log("data",data);
-          if(data == undefined){
+          if('access_token' in data){
             this.showSuccess();
             setTimeout(this.goToHome,2000);
           }

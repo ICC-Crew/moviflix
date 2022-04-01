@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.users import fetch_users,fetch_user_by_id,fetch_user_by_user_name,add_user
-from ..models.user import User,UserIns
+from ..crud.users import fetch_users,fetch_user_by_id,fetch_user_by_user_name
+from ..models.user import User
 from typing import List
 from fastapi import HTTPException, Body, status
-from fastapi.responses import JSONResponse
 from ..models.common import PyObjectId
 
 router = APIRouter(
@@ -38,13 +37,4 @@ async def get_user_by_username(userName : str, db = Depends(get_database)):
         return user
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userName} not found")
-
-@router.post("",response_description="Insert a single user into the DB")
-async def add_user_to_db(user : UserIns = Body(...), db=Depends(get_database)):
-    response = await add_user(db,user)
-    if response.userAdded is None:
-        if response.error is not None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{response.error}")
-    responseJSON = {"msg":response.userAdded}
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=responseJSON)
  
