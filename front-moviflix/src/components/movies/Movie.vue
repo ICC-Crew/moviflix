@@ -41,7 +41,11 @@
             {{ movie.year }}
             </h2>
             <DividerComp />
+            <div>Genres</div>
             <ChipComp v-for="genre in movie.genres" :key="genre[i]" :label="genre" class="m-2" style="background: var(--primary-color);color: var(--primary-color-text)" />
+             <DividerComp />
+            <div class="mb-2">Votre Avis </div>
+            <RatingComp v-model="rating" />
             </div>
             </div>
       </div>
@@ -71,6 +75,7 @@ import { Options, Vue } from 'vue-class-component';
       loading: false,
       movie: null,
       error: null,
+      rating:0,
 
     }
   },
