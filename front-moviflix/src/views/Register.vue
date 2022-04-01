@@ -9,21 +9,21 @@
         <form>
          <div class="block text-center border-round mb-5">
             <div class="p-input-icon-right p-float-label">
-              <InputText id="email" class="p-inputtext-lg" type="text" v-model="registered.email" />
+              <InputText id="email" class="p-inputtext-lg" type="text" v-model="registerData.email" />
               <label for="email">Email</label>
               <i class="pi pi-envelope"/>
             </div>
           </div>
           <div class="block text-center border-round mb-5">
             <div class="p-input-icon-right p-float-label">
-              <InputText id="username" class="p-inputtext-lg" type="text" v-model="registered.name" />
+              <InputText id="username" class="p-inputtext-lg" type="text" v-model="registerData.username" />
               <label for="username">Pseudo</label>
               <i class="pi pi-user"/>
             </div>
           </div>
           <div class="block text-center border-round mb-5">
             <div class="p-input-icon-right p-float-label">
-              <Password id="password" class="p-inputtext-lg" v-model="registered.password">
+              <Password id="password" class="p-inputtext-lg" v-model="registerData.password">
                 <template #header>
                     <h6>Choississez un mot de passe</h6>
                 </template>
@@ -43,7 +43,8 @@
             </div>
           </div>
           <div class="block text-center border-round mb-5">
-            <ButtonComp id="register-submit-button" type="submit" label="Submit" icon="pi pi-sign-in"/>
+            <ToastComp/>
+            <ButtonComp v-on:click="api_register()" id="register-submit-button" type="button" label="Submit" icon="pi pi-sign-in"/>
           </div>
         </form>
       </div>
@@ -58,36 +59,43 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   data() {
     return {
-      registered: {
-        email: "",
-        name: "",
-        password: ""
+      registerData: {
+        username: "",
+        password: "",
+        email: ""
       }
     };
   },
-  // methods:{
-  //   async registerUser() {
-  //     try {
-  //       let response = await this.$http.post("/user/register", this.register);
-  //       console.log(response);
-  //       let token = response.data.token;
-  //       if (token) {
-  //         localStorage.setItem("jwt", token);
-  //         this.$router.push("/");
-  //         console.log("Success", "Registration Was successful", "success");
-  //       } else {
-  //         console.log("Error", "Something Went Wrong", "error");
-  //       }
-  //     } catch (err) {
-  //       let error = err.response;
-  //       if (error.status == 409) {
-  //         console.log("Error", error.data.message, "error");
-  //       } else {
-  //         console.log("Error", error.data.err.message, "error");
-  //       }
-  //     }
-  //   }
-  // },
+  methods:{
+    goToHome : function(){
+      this.$router.push('/'); 
+    },
+    showSuccess() {
+        this.$toast.add({severity:'success', summary: 'Succès', detail:'Inscription réussie !', life: 3000});
+    },
+    showError(message : string) {
+      this.$toast.add({severity:'error', summary: 'Oups...', detail: message, life: 3000});
+    },
+    api_register: async function (){
+      const requestOptions = {
+        method: "POST",
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify({userName: this.registerData.username, password: this.registerData.password, email: this.registerData.email})
+      };
+      await fetch('http://localhost:3002/API/v1/users', requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("data",data);
+          if(data == undefined){
+            this.showSuccess();
+            setTimeout(this.goToHome,2000);
+          }
+          else{
+            this.showError(data.detail);
+          }
+        });
+    }
+  },
   computed: {}
 })
 

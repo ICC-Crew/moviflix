@@ -22,3 +22,15 @@ class UserIns(BaseModel):
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+class UserLogin(BaseModel):
+    userName : str
+    password : str
+    
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class UpdateStructureUser(BaseModel):
+    userAdded : UserIns = None
+    error : str = None

@@ -1,4 +1,4 @@
-from fastapi import Query
+from fastapi import HTTPException, status
 from ..database.connection import AsyncIOMotorClient
 from bson import ObjectId, errors
 from ..models.group import GroupIns, UpdateGroup, UpdateStructure
@@ -13,8 +13,8 @@ async def fetch_groups(conn: AsyncIOMotorClient):
     row = await conn[database_name][collection_name].find().to_list(length=1000)
     return row
 
-async def fetch_group_by_id(conn: AsyncIOMotorClient,groupId:str):
-    row = await conn[database_name][collection_name].find_one({"_id": ObjectId(groupId)}) 
+async def fetch_group_by_id(conn: AsyncIOMotorClient,groupId:PyObjectId):
+    row = await conn[database_name][collection_name].find_one({"_id": groupId}) 
     return row    
 
 async def add_group(conn : AsyncIOMotorClient, group:GroupIns):

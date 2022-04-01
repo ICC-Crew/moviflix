@@ -17,9 +17,16 @@ import Card from 'primevue/card';
 import Paginator from 'primevue/paginator';
 import Divider from 'primevue/divider';
 import Chip from 'primevue/chip';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+import ProgressSpinner from 'primevue/progressspinner';
+
 
 const app = createApp(App);
+
 app.use(PrimeVue,{ripple:true});
+app.use(ToastService);
+
 app.component('MenuBar',Menubar);
 app.component('ButtonComp',Button);
 app.component('InputText',InputText);
@@ -29,6 +36,9 @@ app.component('CardComp',Card);
 app.component('PaginatorComp',Paginator);
 app.component('DividerComp',Divider);
 app.component('ChipComp',Chip);
+app.component('ToastComp',Toast);
+app.component('ProgressSpinner',ProgressSpinner);
+
 
 //app.directive('styleclass', StyleClass); # for animation
 

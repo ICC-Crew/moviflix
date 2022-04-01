@@ -1,8 +1,8 @@
 from inspect import Parameter
-from fastapi import Query
 from ..database.connection import AsyncIOMotorClient
 from bson import ObjectId
 from ..models.movie import MovieIns,UpdatedMovie
+from ..models.common import PyObjectId
 from typing import List
 import ast
 
@@ -17,8 +17,8 @@ async def fetch_incomplete_movies(conn : AsyncIOMotorClient):
     row = await conn[database_name][collection_name].find({"fetched":0},{"_id":1,"imdbID":1}).to_list(length=1000)
     return row
 
-async def fetch_movie_by_id(conn: AsyncIOMotorClient,movieId:str):
-    row = await conn[database_name][collection_name].find_one({"_id": ObjectId(movieId)}) 
+async def fetch_movie_by_id(conn: AsyncIOMotorClient,movieId:PyObjectId):
+    row = await conn[database_name][collection_name].find_one({"_id": movieId}) 
     return row    
 
 async def count_movies(conn:AsyncIOMotorClient):

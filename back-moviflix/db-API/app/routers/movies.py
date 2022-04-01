@@ -1,8 +1,8 @@
-from inspect import Parameter
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
 from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie,count_movies
 from ..models.movie import Movie,MovieIns,UpdatedMovie
+from ..models.common import PyObjectId
 
 from typing import List
 from fastapi import HTTPException, Body, status
@@ -10,9 +10,10 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 router = APIRouter(
-     prefix="/movies",
+    prefix="/movies",
     tags=["movies"],
 )
+
 @router.get("",response_description="List all movies in DB, with projection. If you don't provide any projection field, uses title and movieCoverUrl")
 async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:str = None, db = Depends(get_database)):
     movieList = await fetch_movies_with_projection(db, limit, page, parameters)
@@ -40,8 +41,15 @@ async def number_of_movies(db = Depends(get_database)):
     raise HTTPException(status_code=400, detail="Error counting the number of movies")
     
 @router.get("/{movieId}",response_description="Find a single movie with its MongoDB ID",response_model=Movie)
-async def get_movie(movieId : str, db = Depends(get_database)): 
-    movie = await fetch_movie_by_id(db,movieId)
+async def get_movie(movieId : str, db = Depends(get_database)):
+    # Check if the movie ID is valid
+    try:
+        movieIdToFetch = PyObjectId(movieId)
+    except:
+        raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided user ID '{movieId}' is not a valid Mongo ID")
+
+    movie = await fetch_movie_by_id(db,movieIdToFetch)
+
     if movie is not None : 
         return movie
 

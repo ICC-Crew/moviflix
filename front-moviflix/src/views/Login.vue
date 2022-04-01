@@ -27,7 +27,8 @@
             </div>
           </div>
           <div class="justify-center flex text-center border-round mb-5">
-              <ButtonComp v-on:click="call_api_test()" id="login-submit-button" label="Connexion" icon="pi pi-sign-in"/>
+              <ToastComp/>
+              <ButtonComp v-on:click="api_login()" id="login-submit-button" label="Connexion" icon="pi pi-sign-in"/>
               <ButtonComp v-on:click="goToRegister()" class="inscription-button" label="Inscription"/>
           </div>
         </form>
@@ -54,10 +55,34 @@ import { Options, Vue } from 'vue-class-component';
     goToRegister : function(){
       this.$router.push('register'); 
     },
-    call_api_test: async function (){
-      fetch('http://localhost:3002/API/v1/users')
-        .then(response => response.json())
-        .then(console.log)}
+    goToHome : function(){
+      this.$router.push('/'); 
+    },
+    showSuccess() {
+        this.$toast.add({severity:'success', summary: 'Succès', detail:'Connecté avec succès', life: 3000});
+    },
+    showError() {
+        this.$toast.add({severity:'error', summary: 'Oups...', detail:'Ton pseudo ou ton mot de passe est incorrect', life: 3000});
+    },
+    api_login: async function (){
+      const requestOptions = {
+        method: "POST",
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify({userName: this.loginData.username, password: this.loginData.password})
+      };
+      await fetch('http://localhost:3002/API/v1/auth/login', requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("data",data);
+          if(data.msg == "You are logged in !"){
+            this.showSuccess();
+            setTimeout(this.goToHome,2000);
+          }
+          else{
+            this.showError();
+          }
+        });
+      }
     },
   computed: {}
 })

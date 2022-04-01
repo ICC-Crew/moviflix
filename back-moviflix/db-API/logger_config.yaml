@@ -1,0 +1,41 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(levelname)s | %(message)s"
+  
+  custom:
+    format: "%(levelname)s | %(asctime)s | %(name)s | %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: standard
+    stream: ext://sys.stdout
+  
+  globalFileLogger:
+    class: logging.handlers.RotatingFileHandler
+    formatter: custom
+    filename: "./app/logs/fastapi_mongodb.log"
+    maxBytes: 1000000
+    backupCount: 1
+  
+  requestFileLogger:
+    class: logging.handlers.RotatingFileHandler
+    formatter: custom
+    filename: "./app/logs/requests.log"
+    maxBytes: 1000000
+    backupCount: 1
+
+loggers:
+  uvicorn.error:
+      propagate: true
+  uvicorn.access:
+      handlers: [requestFileLogger]
+
+root:
+  level: INFO
+  handlers: [console, globalFileLogger]
+  propagate: no
