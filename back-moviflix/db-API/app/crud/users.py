@@ -43,3 +43,18 @@ async def fetch_login_user_name_and_pwd(conn: AsyncIOMotorClient, user:UserLogin
     userDict = UserLogin(**user.dict())
     row = await conn[database_name][collection_name].find_one(userDict.dict())
     return row 
+
+async def fetch_user_watched_movies(conn: AsyncIOMotorClient, userId:PyObjectId):
+    ratingList = await conn[database_name]["userOpinions"].find({"userId": userId}).to_list(length=1000)
+    movieIdList = [el["movieId"] for el in ratingList]
+
+    movieList = await conn[database_name]["movies"].find({"_id": {"$in": movieIdList}}, projection={"_id": True, "title": True, "movieCoverUrl": True}).to_list(length=1000)
+
+    if movieList is not None and movieList != []:
+        for movL in movieList:
+            for movRating in ratingList:
+                if movRating["movieId"] == movL["_id"]:
+                    movL["rating"] = movRating["rating"]
+                    ratingList.remove(movRating)
+
+    return movieList
