@@ -4,6 +4,7 @@ from ..crud.users import fetch_check_exist_user_login, add_user
 from ..models.user import UserIns, UserLoginSchema
 from fastapi import HTTPException, Body, status
 from app.auth.auth_handler import signJWT
+from app.auth.auth_bearer import JWTBearer
 
 router = APIRouter(
      prefix="/auth",

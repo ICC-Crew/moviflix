@@ -67,6 +67,10 @@ import { Options, Vue } from 'vue-class-component';
     };
   },
   methods:{
+     addNewToken : function(token : string){
+      this.$store.dispatch("addToken", token)
+      this.$store.dispatch("connect")
+    },
     goToHome : function(){
       this.$router.push('/'); 
     },
@@ -86,6 +90,7 @@ import { Options, Vue } from 'vue-class-component';
         .then((response) => response.json())
         .then((data) => {
           if('access_token' in data){
+            this.addNewToken(data.access_token);
             this.showSuccess();
             setTimeout(this.goToHome,2000);
           }
