@@ -18,15 +18,9 @@ async def fetch_group_by_id(conn: AsyncIOMotorClient,groupId:PyObjectId):
     return row
 
 async def fetch_group_watched_list(conn: AsyncIOMotorClient, groupMembers:List[PyObjectId]):
-    movieOpinionList = await conn[database_name]["userOpinions"].find({"userId": {"$in": groupMembers}}, projection={"movieId"}).to_list(length=1000)
-    print("Movie id list")
-    print(movieOpinionList)
-    movieIdList = [el["movieId"] for el in movieOpinionList]
-    print(movieIdList)
+    movieIdList = await conn[database_name]["userOpinions"].find({"userId": {"$in": groupMembers}}, projection={"movieId"}).distinct("movieId")
     
     groupWatchedMovies = await conn[database_name]["movies"].find({"_id": {"$in": movieIdList}}, projection={"title": True, "genres":True}).to_list(length=1000)
-    print("Movies watched by the group")
-    print(groupWatchedMovies)
 
     return groupWatchedMovies
 
