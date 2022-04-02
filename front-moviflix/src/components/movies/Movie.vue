@@ -94,8 +94,9 @@ import { Options, Vue } from 'vue-class-component';
             throw new Error('Erreur lors de la connection à l API')
         })
         .then(responseJSON =>{
+          setTimeout(() => {
             this.movie = responseJSON
-            this.loading = false
+            this.loading = false},300)
         })
         .catch((error)=>{
             this.error = error.toString()
