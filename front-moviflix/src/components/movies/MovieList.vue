@@ -77,8 +77,11 @@ import { Options, Vue } from 'vue-class-component';
             throw new Error('Erreur lors de la connection à l API (pagination des films) ')
         })
         .then(responseJSON =>{
+            setTimeout(() => {
             this.movieList = responseJSON
             this.loading = false
+              }, 500)
+            
         })
         .catch((error)=>{
             this.error = error.toString()
