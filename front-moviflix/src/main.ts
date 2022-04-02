@@ -20,7 +20,7 @@ import Chip from 'primevue/chip';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import ProgressSpinner from 'primevue/progressspinner';
-
+import Rating from 'primevue/rating';
 
 const app = createApp(App);
 
@@ -38,7 +38,7 @@ app.component('DividerComp',Divider);
 app.component('ChipComp',Chip);
 app.component('ToastComp',Toast);
 app.component('ProgressSpinner',ProgressSpinner);
-
+app.component('RatingComp',Rating);
 
 //app.directive('styleclass', StyleClass); # for animation
 
