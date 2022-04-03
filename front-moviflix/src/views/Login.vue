@@ -78,7 +78,6 @@ import { Options, Vue } from 'vue-class-component';
       await fetch('http://localhost:3002/API/v1/auth/user/login', requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          console.log("data",data);
           if('access_token' in data){
             this.addNewToken(data.access_token);
             this.showSuccess();

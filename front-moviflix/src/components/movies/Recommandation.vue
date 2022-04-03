@@ -53,8 +53,6 @@ import { Options, Vue } from 'vue-class-component';
       this.loading = true
       this.error = this.movie = null
       let token = this.$store.getters.userToken
-      console.log("TOOOOOOOOOOOOOOOKEEEEEEEEEEEEEEEN")
-      console.log(token)
       fetch(`http://localhost:3001/API/v1/recommandation/get_recommandation?groupId=6249c6e09ff1623ac50132ab&token=${token}`)
         .then(response => {
             if (response.ok){
