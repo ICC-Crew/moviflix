@@ -27,6 +27,7 @@ services:
     build: ./back-moviflix/db-API
     volumes:
       - "./back-moviflix/db-API/:/code"
+      - "./back-moviflix/db-API/app/logs:/code/app/logs"
     ports:
       - "3002:80"
     depends_on:
