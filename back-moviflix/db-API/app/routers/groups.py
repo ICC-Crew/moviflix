@@ -40,13 +40,20 @@ async def get_group_watched_list(groupId:str, db = Depends(get_database)):
     except:
         raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail=f"The provided group ID '{groupId}' is not a valid Mongo ID")
     
+    # Getting the group
     group = await get_group(groupIdToFetch, db)
-    
-    print(group["members"])
+    if group is None : 
+        raise HTTPException(status_code=404, detail=f"Group {groupId} not found")
 
+    # Getting the movie list of the group
     movieList = await fetch_group_watched_list(db, group["members"])
 
-    raise HTTPException(status_code=404, detail=f"Group {groupId} not found")
+    if movieList != None and movieList != []:
+        for mov in movieList:
+            mov["_id"] = str(mov["_id"])
+        return movieList
+
+    raise HTTPException(status_code=404, detail=f"This group ({groupId}) did not watch any movie yet")
 
 @router.post("", dependencies=[Depends(JWTBearer())], response_description="Insert a new group into the DB")
 async def insert_group(group:GroupIns = Body(...), db=Depends(get_database)):

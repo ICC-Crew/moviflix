@@ -9,9 +9,9 @@ router = APIRouter(
 
 FASTAPI_MONGO_URL = "http://moviflix_db-api_1:80/API/v1/"
 
-@router.get("",response_description="Returns the selected fields of all movies")
-async def get_movies_with_projection():
-    req = requests.get(FASTAPI_MONGO_URL + "movies")
+@router.get("",response_description="Returns the selected fields of all movies (title and cover by default)")
+async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:str = ""):
+    req = requests.get(FASTAPI_MONGO_URL + f"movies?limit={limit}&page={page}&parameters={parameters}")
     return req.json()
 
 @router.get("/group_members",response_description="Returns the members of a group")
