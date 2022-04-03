@@ -6,6 +6,8 @@ from typing import List
 from fastapi import HTTPException, Body, status
 from ..models.common import PyObjectId
 from app.auth.auth_bearer import JWTBearer
+from fastapi.responses import JSONResponse
+
 
 router = APIRouter(
      prefix="/users",
