@@ -17,7 +17,29 @@ async def fetch_incomplete_movies(conn : AsyncIOMotorClient):
     row = await conn[database_name][collection_name].find({"fetched":0},{"_id":1,"imdbID":1}).to_list(length=1000)
     return row
 
-async def fetch_movie_by_id(conn: AsyncIOMotorClient,movieId:PyObjectId):
+async def fetch_movies_with_filtering_by_genre(conn: AsyncIOMotorClient, genres:str, exclude:str):
+    print(f"genre {genres} exclude: {exclude}")
+    if genres is not None and genres != "":
+        params = ""
+        for p in genres.split(","):
+            params += f"'{p.strip()}',"
+        
+        filterArray = ast.literal_eval("[" + params + "]")
+        
+        if exclude is not None and exclude != "":
+            moviesToExclude = [] 
+            for p in exclude.split(","):
+                moviesToExclude.append(PyObjectId(f"{p.strip()}"))
+            
+            row = await conn[database_name][collection_name].find({"genres": {"$in": filterArray}, "_id": {"$nin": moviesToExclude}},{"_id": 1, "title": 1, "movieCoverUrl": 1}).to_list(length=1000)
+        else:        
+            row = await conn[database_name][collection_name].find({"genres": {"$in": filterArray}},{"_id": 1, "title": 1, "movieCoverUrl": 1}).to_list(length=1000)
+    else:
+        row = fetch_movies(conn)
+
+    return row
+
+async def fetch_movie_by_id(conn: AsyncIOMotorClient, movieId:PyObjectId):
     row = await conn[database_name][collection_name].find_one({"_id": movieId}) 
     return row    
 
@@ -37,7 +59,7 @@ async def add_movies(conn : AsyncIOMotorClient, movies : List[MovieIns]):
 async def fetch_movies_with_projection(conn: AsyncIOMotorClient, limit:int, page:int, parameters:str):
     projection = {}
 
-    if parameters is not None:
+    if parameters is not None and parameters != "":
         params = ""
         for p in parameters.split(","):
             params += f"'{p.strip()}',"
