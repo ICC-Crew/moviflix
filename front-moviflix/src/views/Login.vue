@@ -68,6 +68,7 @@ import { Options, Vue } from 'vue-class-component';
     showError(message : string) {
         this.$toast.add({severity:'error', summary: 'Oups...', detail: message, life: 3000});
     },
+
     api_login: async function (){
       const requestOptions = {
         method: "POST",
