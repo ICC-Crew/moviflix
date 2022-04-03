@@ -19,7 +19,12 @@ async def fetch_user_by_id(conn: AsyncIOMotorClient,userId:PyObjectId):
 
 async def fetch_user_by_user_name(conn: AsyncIOMotorClient,userName:str):
     row = await conn[database_name][collection_name].find_one({"userName": userName}) 
-    return row 
+    return row
+
+async def fetch_group_list(conn: AsyncIOMotorClient,userId:str):
+    row = await conn[database_name][collection_name].find({"members": {"$in": userId}}).to_list(length=1000)
+    print("ROOOOOOOOOOOOOOOW", row)
+    return row
 
 async def add_user(conn : AsyncIOMotorClient, user:UserIns):
     return_structure = UpdateStructureUser()
