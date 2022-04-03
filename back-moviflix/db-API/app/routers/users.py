@@ -1,3 +1,4 @@
+from tokenize import group
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
 from ..crud.users import fetch_users, fetch_user_by_id, fetch_user_by_user_name, add_user, fetch_user_watched_movies, fetch_group_list
@@ -35,14 +36,24 @@ async def get_watched_movies(userId : str, db = Depends(get_database)):
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not watch any movie yet")
 
-# @router.get("/groups", dependencies=[Depends(JWTBearer())], response_description="Find the user group")
-# async def get_user_groups(token : str, db = Depends(get_database)):
-#     userName = decodeJWT(token)
+@router.get("/groups", dependencies=[Depends(JWTBearer())], response_description="Find the user group")
+async def get_user_groups(token : str = Depends(JWTBearer()), db = Depends(get_database)):
+    userName = decodeJWT(token)
+    if userName == {} or userName is None:
+         raise HTTPException(status_code=status.HTTP_418_IM_A_TEAPOT, detail="An error occured while decoding the token...")
 
-#     userId = get_user_by_username(userName)
-#     groupList = fetch_group_list(db, userId)
+    userId = await get_user_by_username(userName["user_id"], db)
+    groupList = await fetch_group_list(db, userId["_id"])
 
-#     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not watch any movie yet")
+    if groupList is None or groupList == []:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId['_id']} is not in a group")
+    
+    groupIdList = [el["_id"] for el in groupList]
+
+    for idx, groupId in enumerate(groupIdList):
+        groupIdList[idx] = str(groupId)
+
+    return groupIdList
 
 @router.get("/{userId}", dependencies=[Depends(JWTBearer())], response_description="Find an user with its MongoDB ID",response_model=User)
 async def get_user(userId : str, db = Depends(get_database)):

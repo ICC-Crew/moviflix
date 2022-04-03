@@ -13,16 +13,17 @@ async def fetch_users(conn: AsyncIOMotorClient):
     row = await conn[database_name][collection_name].find().to_list(length=1000)
     return row
 
-async def fetch_user_by_id(conn: AsyncIOMotorClient,userId:PyObjectId):
+async def fetch_user_by_id(conn: AsyncIOMotorClient, userId:PyObjectId):
     row = await conn[database_name][collection_name].find_one({"_id": userId}) 
     return row    
 
-async def fetch_user_by_user_name(conn: AsyncIOMotorClient,userName:str):
+async def fetch_user_by_user_name(conn: AsyncIOMotorClient, userName:str):
     row = await conn[database_name][collection_name].find_one({"userName": userName}) 
     return row
 
-async def fetch_group_list(conn: AsyncIOMotorClient,userId:str):
-    row = await conn[database_name][collection_name].find({"members": {"$in": userId}}).to_list(length=1000)
+async def fetch_group_list(conn: AsyncIOMotorClient, userId:PyObjectId):
+    print("userid got", userId)
+    row = await conn[database_name]["groups"].find({"members": {"$in": [userId]}}).to_list(length=1000)
     print("ROOOOOOOOOOOOOOOW", row)
     return row
 
