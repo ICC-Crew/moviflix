@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie,count_movies
+from ..crud.movies import fetch_movie_by_id,add_movie,fetch_movies_with_projection,update_movie,count_movies, fetch_movies_with_filtering_by_genre
 from ..models.movie import Movie,MovieIns,UpdatedMovie
 from ..models.common import PyObjectId
 
@@ -31,6 +31,16 @@ async def get_movies_with_projection(limit:int = 20, page:int = 0, parameters:st
 
     json_compatible_item_data = jsonable_encoder(movieList)
     return JSONResponse(content=json_compatible_item_data)
+
+@router.get("/filter",response_description="Count the number of Movies")
+async def get_movies_with_filtering_by_genre(genres:str="", exclude:str="", db = Depends(get_database)): 
+    movieList = await fetch_movies_with_filtering_by_genre(db, genres, exclude)
+    if movieList is not None :
+        for mov in movieList:
+            mov["_id"] = str(mov["_id"])
+        return {"movies" : movieList}
+
+    raise HTTPException(status_code=400, detail="Error counting the number of movies")
 
 @router.get("/count",response_description="Count the number of Movies")
 async def number_of_movies(db = Depends(get_database)): 

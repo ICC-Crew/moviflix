@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from ..database.connection import get_database
-from ..crud.users import fetch_users, fetch_user_by_id, fetch_user_by_user_name, add_user, fetch_user_watched_movies
+from ..crud.users import fetch_users, fetch_user_by_id, fetch_user_by_user_name, add_user, fetch_user_watched_movies, fetch_group_list
 from ..models.user import User,UserIns
 from typing import List
 from fastapi import HTTPException, Body, status
 from ..models.common import PyObjectId
-from app.auth.auth_bearer import JWTBearer
+from app.auth.auth_bearer import JWTBearer, decodeJWT
 from fastapi.responses import JSONResponse
 
 
@@ -34,6 +34,15 @@ async def get_watched_movies(userId : str, db = Depends(get_database)):
         return watched_list
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not watch any movie yet")
+
+# @router.get("/groups", dependencies=[Depends(JWTBearer())], response_description="Find the user group")
+# async def get_user_groups(token : str, db = Depends(get_database)):
+#     userName = decodeJWT(token)
+
+#     userId = get_user_by_username(userName)
+#     groupList = fetch_group_list(db, userId)
+
+#     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User {userId} did not watch any movie yet")
 
 @router.get("/{userId}", dependencies=[Depends(JWTBearer())], response_description="Find an user with its MongoDB ID",response_model=User)
 async def get_user(userId : str, db = Depends(get_database)):
