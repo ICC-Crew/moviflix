@@ -1,8 +1,10 @@
 <template>
-<div>
-  <HeaderComp class="sticky" />
-  <router-view class="min-h-screen"  />
-  <FooterComp />
+<div style="min-height:100vh; display:flex; flex-direction:column; 
+            justify-content:space-between;">
+<HeaderComp class="sticky" />
+<router-view />
+<FooterComp />
+
 </div>
 </template>
 
