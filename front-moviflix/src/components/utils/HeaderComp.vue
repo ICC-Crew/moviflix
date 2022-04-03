@@ -27,7 +27,7 @@ import { Options, Vue } from 'vue-class-component';
                     to: '/movies'
                 },
                 {
-                    label: 'Groupes',
+                    label: 'Recommandation',
                     icon: 'pi pi-fw pi-users',
                     to: '/login'
                 },
