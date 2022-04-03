@@ -4,6 +4,7 @@ import Movies from '../views/Movies.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Movie from '../components/movies/Movie.vue'
+import Recommandation from '../components/movies/Recommandation.vue'
 import store from '../store';
 
 
@@ -41,6 +42,13 @@ const routes: Array<RouteRecordRaw> = [
         requiresAuth: true
     } 
   },
+  { path: '/recommandation',
+    name:'Recommandation',
+    component: Recommandation,
+    meta: {
+        requiresAuth: true
+    } 
+  }
 
 ]
 

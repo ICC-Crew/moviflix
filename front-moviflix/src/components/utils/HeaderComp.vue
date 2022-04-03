@@ -29,7 +29,7 @@ import { Options, Vue } from 'vue-class-component';
                 {
                     label: 'Recommandation',
                     icon: 'pi pi-fw pi-users',
-                    to: '/login'
+                    to: '/recommandation'
                 },
             ]
 		}
